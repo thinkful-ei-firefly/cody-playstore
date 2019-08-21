@@ -19,7 +19,6 @@ app.get('/apps', (req, res) => {
   }
 
   // console.log(req.query);
-
   const { sort, genres } = req.query;
   let sortedPlaystore = [...playstore];
 
@@ -41,9 +40,12 @@ app.get('/apps', (req, res) => {
 
   if (genres) {
     console.log(genres);
-    if (['Action', 'Puzzle', 'Strategy', 'Casual', 'Arcade', 'Card'].includes(genres)) {
+    if (['Adventure', 'Action', 'Puzzle', 'Strategy', 'Casual', 'Arcade', 'Card'].includes(genres)) {
       sortedPlaystore = sortedPlaystore.filter(
-        playApp => playApp.Genres === genres
+        playApp => {
+          const appGenres = playApp.Genres.split(';')
+          return appGenres.includes(genres)
+        }
       );
       res.status(200).send(sortedPlaystore);
       return;
@@ -54,13 +56,10 @@ app.get('/apps', (req, res) => {
   }
 
   // res.send(playstore);
-  res.send('not sorted');
+  res.send(sortedPlaystore);
   return;
 });
 
-// start server
-app.listen(8000, () => {
-  console.log('Express server is listening on port 8000!');
-});
+module.exports = app
 
 // package.json has things also...
